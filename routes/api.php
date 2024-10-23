@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/genres', [GenreController::class,'index']);
+
+Route::get('/brands', [BrandController::class,'index']);
