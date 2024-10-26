@@ -26,12 +26,12 @@ class SongResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('genre_id')
+                Forms\Components\Select::make('genre_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('brand_id')
+                    ->relationship('genre', 'name'),
+                Forms\Components\Select::make('brand_id')
                     ->required()
-                    ->numeric(),
+                    ->relationship('brand', 'name'),
                 Forms\Components\FileUpload::make('image_path')
                     ->image(),
                 Forms\Components\TextInput::make('song_path')
@@ -46,10 +46,10 @@ class SongResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('genre_id')
+                Tables\Columns\TextColumn::make('genre.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('brand_id')
+                Tables\Columns\TextColumn::make('brand.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image_path'),
