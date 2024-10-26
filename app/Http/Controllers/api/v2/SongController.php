@@ -9,9 +9,20 @@ use Illuminate\Http\Request;
 class SongController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $songs = Song::orderby('name','asc')->get();
+    
+        if($request->has('genre_id'))
+        {
+            $songs=Song::where('genre_id',$request->input('genre_id'))
+                              ->orderBy('name','asc')
+                              ->get();
+        }
+        else
+        {
+            $songs = Song::orderby('name','asc')->get();
+        }
+
         $transformedSongs =$songs->map(function($row){
 
             return [
@@ -20,6 +31,7 @@ class SongController extends Controller
                 'image_path'=>$row->GetImagePath(),
             ];
         });
+        
 
 
         return response()->json(['data' => $transformedSongs],200);
