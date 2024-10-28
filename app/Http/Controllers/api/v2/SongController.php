@@ -18,6 +18,12 @@ class SongController extends Controller
                               ->orderBy('name','asc')
                               ->get();
         }
+        elseif ($request->has('brand_id')) 
+        {
+            $songs=Song::where('brand_id',$request->input('brand_id'))
+                              ->orderBy('name','asc')
+                              ->get();
+        }
         else
         {
             $songs = Song::orderby('name','asc')->get();
