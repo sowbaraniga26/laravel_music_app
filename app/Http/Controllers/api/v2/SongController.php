@@ -35,6 +35,7 @@ class SongController extends Controller
                 'id'=>$row->id,
                 'name'=>$row->name,
                 'image_path'=>$row->GetImagePath(),
+                'song_path' => $row->GetSongPath()
             ];
         });
         
@@ -42,5 +43,7 @@ class SongController extends Controller
 
         return response()->json(['data' => $transformedSongs],200);
     }
+
+    
 
 }

@@ -22,7 +22,7 @@ return new class extends Migration
             
             $table->string('image_path')->default('no_image_available.jpg')->nullable();
 
-            $table->string('song_path')->default('no_image_available.jpg')->nullable();
+            $table->string('song_path')->nullable();
 
             $table->timestamps();
         });

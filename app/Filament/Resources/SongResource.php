@@ -34,9 +34,9 @@ class SongResource extends Resource
                     ->relationship('brand', 'name'),
                 Forms\Components\FileUpload::make('image_path')
                     ->image(),
-                Forms\Components\TextInput::make('song_path')
-                    ->maxLength(255)
-                    ->default('no_image_available.jpg'),
+                Forms\Components\FileUpload::make('song_path')
+                    ->directory('songs')
+                    // ->acceptedFileTypes(['application/mp3'])
             ]);
     }
 
