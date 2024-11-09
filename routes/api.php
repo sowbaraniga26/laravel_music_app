@@ -6,6 +6,8 @@ use App\Http\Controllers\api\v2\GenreController;
 
 use App\Http\Controllers\api\v2\BrandController;
 use App\Http\Controllers\api\v2\SongController;
+use App\Http\Controllers\api\v2\AuthController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +30,17 @@ Route::get('/genres', [GenreController::class,'index']);
 Route::get('/brands', [BrandController::class,'index']);
 
 Route::get('/songs', [SongController::class,'index']);
+
+Route::post('/login',[AuthController::class,'login']);
+Route::post('/register',[AuthController::class,'register']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+  
+    Route::get('/user',[AuthController::class, 'getUser']);
+
+    Route::post('/upload=profile-pic', [AuthController::class, 'upload']);
+
+    Route::get('/logout', [AuthController::class, 'logout']);
+});
+
+
