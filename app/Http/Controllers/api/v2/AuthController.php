@@ -5,164 +5,147 @@ namespace App\Http\Controllers\api\v2;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Message;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Login a user and return a token.
      */
     public function login(Request $request)
     {
-        try{
+        try {
             $request->validate([
-                'email'=>'required|email',
-                'password'=>'required',
-                'device_name'=>'required',
+                'email' => 'required|email',
+                'password' => 'required',
+                'device_name' => 'required',
             ]);
 
-            $user = User::where('email',$request->email)->first();
+            $user = User::where('email', $request->email)->first();
 
-            if(! $user || !Hash::check($request->password, $user->password)) {
-                throw ValidatiionException::withMessaged([
-                    'email' =>['the provided credentials are incorrect'],
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
                 ]);
-            
-              }
-              return $user->createToken($request->device_name)->plainTextToken;
-            
-        }
-        catch(ValidationException $e){
-            return response()->json(['error'=> $e->validator->errors()],200);
-        }
-        catch(Exception $e){
-            return response()->json(['erro'=>$e->validator->errors()],200);
+            }
+
+            return $user->createToken($request->device_name)->plainTextToken;
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-
     /**
-     * Store a newly created resource in storage.
+     * Logout a user by deleting tokens.
      */
-
-     public function logout(Request $request)
-     {
-        try{
-            $user =$request->user();
+    public function logout(Request $request)
+    {
+        try {
+            $user = $request->user();
             $user->tokens()->delete();
-            return 'Token are deleted';
-        }catch(ValidationException $e){
-           
-            return response()->json(['error'=>$e->validator->errors()], 200);
-        
+            return response()->json(['message' => 'Tokens deleted successfully'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-    
     }
 
     /**
-     * Display the specified resource.
+     * Register a new user and send a confirmation email.
      */
-      
-     public function register(Request $request)
-     {
+    public function register(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6',
+                'device_name' => 'required|string',
+            ]);
 
-        try{
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
 
-          $request->validate([
+            $recipient = $user->email;
+            $subject = 'Welcome to Our Platform';
+            $body = 'Thank you for registering!';
 
-            'name'=> 'required|string|max:255',
-            'email'=> 'required\email\unique:users,email',
-            'password'=>'required',
-            'device_name'=>'required|string',
-
-          ]);
-
-          $user =User::create([
-            'name'=>$request->input('name'),
-            'email'=>$request->input('email'),
-            'password'=>Hash::make($request->input('password')),
-          ]);
-          $recipient = $user->email; // Replace with actual recipient's email
-            $subject = 'Custom Subject';
-            $body = 'This is the body of the email. You can include HTML here if needed.';
-
-            Mail::raw($body, function(Message $message) use ($recipient, $subject) {
+            Mail::raw($body, function (Message $message) use ($recipient, $subject) {
                 $message->to($recipient);
                 $message->subject($subject);
-                // You can add attachments or other options here if needed
             });
 
-            return response()->json(['message'=>'User registered successfully','user'=>$user],201);
-        }catch(ValidationEception $e){
-            return response()->json(['error'=> $e->validate->errors()],200);
+            return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-     }
-     public function getUser(Request $request)
-     {
-        $user =$request->user();
-        $user->photo_path =url('/storage/' .$user->photo_path);
-        return $user;
-     }    
-      /**
-     * Store a newly created resource in storage.
+    }
+
+    /**
+     * Get the current authenticated user.
      */
-     
-      public function updateProfile(Request $request)
-      {
-         try{
-            $user =$request->user();
+    public function getUser(Request $request)
+    {
+        $user = $request->user();
+        $user->photo_path = url('/storage/' . $user->photo_path);
+        return response()->json($user);
+    }
+
+    /**
+     * Update the authenticated user's profile.
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $user = $request->user();
 
             $request->validate([
                 'name' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:user,email,' .$user->id,
-                'password'=>'nullable|string|min:6',
-                'device_name'=>'required|string',
+                'email' => 'sometimes|email|unique:users,email,' . $user->id,
+                'password' => 'nullable|string|min:6',
+                'device_name' => 'required|string',
             ]);
 
-            $data =[];
-            if($request->filled('name')){
-                $data['name'] =$request->input('name');
+            $data = [];
+            if ($request->filled('name')) {
+                $data['name'] = $request->input('name');
             }
-            if($request->filled('email')){
-                $data['email'] =$request->input('email');
+            if ($request->filled('email')) {
+                $data['email'] = $request->input('email');
             }
-            if($request->filled('password')){
-                $data['password'] =Hash::make($request->input('password'));
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->input('password'));
             }
             $user->update($data);
-            return response()->json(['message'=>'profile update successfully','user' =>$user]);
-        
-         }catch(ValidationException $e){
-            return response()->json(['error'=>$e->validator->errors()],422);
-         }
-      }
 
-      /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, user $user)
-    {
-        //
+            return response()->json(['message' => 'Profile updated successfully', 'user' => $user]);
+
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->validator->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(user $user)
+    public function update(Request $request, User $user)
     {
-        //
+        // Code for updating other users (if needed)
     }
 
+    public function destroy(User $user)
+    {
+        // Code for deleting a user (if needed)
+    }
 }
-     
-
-
-    
-
-
-
-
