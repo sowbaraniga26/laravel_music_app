@@ -13,6 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
+
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
@@ -25,6 +28,10 @@ class BrandResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state)=> $set('slug', Str::slug($state))),
+                Forms\Components\TextInput::make('slug')
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image_path')
                     ->image(),

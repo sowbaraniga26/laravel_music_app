@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Storage;
 
+
 class Brand extends Model
 {
     use HasFactory;
 
     protected $fillable =[
         'name',
+        'slug',
         'image_path'
     ];
 
