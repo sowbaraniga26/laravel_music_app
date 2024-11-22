@@ -16,6 +16,7 @@ class Song extends Model
         'genre_id',
         'brand_id',
         'image_path',
+        'slug',
         'song_path'
     ];
 

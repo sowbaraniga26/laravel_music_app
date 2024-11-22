@@ -13,6 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
+
 class SongResource extends Resource
 {
     protected static ?string $model = Song::class;
@@ -25,6 +28,10 @@ class SongResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state)=> $set('slug', Str::slug($state))),
+                    Forms\Components\TextInput::make('slug')
                     ->maxLength(255),
                 Forms\Components\Select::make('genre_id')
                     ->required()
