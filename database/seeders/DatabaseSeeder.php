@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 use App\Models\User; 
+use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -27,5 +28,13 @@ class DatabaseSeeder extends Seeder
         $this->call(GenreSeeder::class);
         $this->call(BrandSeeder::class);
         $this->call(SongSeeder::class);
+
+        SystemSetting::factory()->create([
+            'company_name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'website'=> '',
+            'customer_care_no' => ''
+        ]);
+        
     }
 }
