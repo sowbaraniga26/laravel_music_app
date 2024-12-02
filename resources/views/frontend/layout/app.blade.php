@@ -15,7 +15,7 @@
     @include('frontend.layout.header')
 
     <!-- Include the topbar partial -->
-    @include('frontend.layout.topbar')
+    {{-- @include('frontend.layout.topbar') --}}
 
     @yield('content')
 
