@@ -1,5 +1,5 @@
 @extends('frontend.layout.app')
 
 @section('content')
-about page
+contact page
 @endsection()

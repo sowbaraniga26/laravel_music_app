@@ -15,4 +15,14 @@ class HomeController extends Controller
     {
         return view('frontend/about');
     }
+    public function services(Request $request )
+    {
+        return view('frontend/services');
+    }
+    public function contact(Request $request )
+    {
+        return view('frontend/contact');
+    }
+
+
 }

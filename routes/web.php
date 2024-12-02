@@ -21,3 +21,5 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
+Route::get('/services', [HomeController::class, 'services'])->name('home.services');
+Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
