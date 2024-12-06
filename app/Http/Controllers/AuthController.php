@@ -60,6 +60,18 @@ class AuthController extends Controller
         return view('frontend/auth/profile');
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
+
     public function register(Request $request)
     {
         return view('frontend/auth/register');

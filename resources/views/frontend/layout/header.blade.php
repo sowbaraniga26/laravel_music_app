@@ -38,12 +38,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="/profile">Profile</a></li>
-              <li>
-                <form action="/logout" method="POST" style="display: inline;">
-                  @csrf
-                  <button class="dropdown-item" type="submit">Logout</button>
-                </form>
-              </li>
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
           </li>
           @endauth
