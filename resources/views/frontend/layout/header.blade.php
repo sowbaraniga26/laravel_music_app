@@ -20,6 +20,34 @@
             <a class="nav-link" href="/contact">Contact</a>
           </li>
         </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          @guest
+          <!-- Show when the user is not authenticated -->
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+          @endguest
+          @auth
+          <!-- Show when the user is authenticated -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ Auth::user()->name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+              <li>
+                <form action="/logout" method="POST" style="display: inline;">
+                  @csrf
+                  <button class="dropdown-item" type="submit">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+          @endauth
+        </ul>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>

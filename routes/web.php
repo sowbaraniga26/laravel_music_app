@@ -18,8 +18,12 @@ Route::get('/', function () {
 });
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/services', [HomeController::class, 'services'])->name('home.services');
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
+
+
+Route::get('/login', [AuthController::class, 'login'])->name('home.login');
