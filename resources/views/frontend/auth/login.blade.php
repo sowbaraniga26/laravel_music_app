@@ -6,9 +6,9 @@
     <div class="card shadow-lg" style="width: 25rem;">
       <div class="card-body">
         <h5 class="card-title text-center mb-4">Login</h5>
-        <form action="/login" method="POST">
+        <form action="{{ route('home.authenticate') }}" method="POST">
           <!-- CSRF Token for Laravel -->
-          <!-- @csrf -->
+          @csrf
 
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
