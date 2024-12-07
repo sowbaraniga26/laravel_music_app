@@ -6,9 +6,28 @@
     <div class="card shadow-lg" style="width: 30rem;">
       <div class="card-body">
         <h5 class="card-title text-center mb-4">Create an Account</h5>
-        <form action="/register" method="POST">
+        
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- registered successfully -->
+        <!-- Check if a success message exists in the session and display it -->
+        @if (Session::has('success_message'))
+            <div class="alert alert-success">
+                {{ Session::get('success_message') }}
+            </div>
+        @endif
+
+        <form action="{{ route('home.store') }}" method="POST">
           <!-- CSRF Token for Laravel -->
-          <!-- @csrf -->
+          @csrf
 
           <div class="mb-3">
             <label for="name" class="form-label">Full Name</label>

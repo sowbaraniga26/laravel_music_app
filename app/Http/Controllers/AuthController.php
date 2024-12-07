@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginNotification;
 use App\Mail\LogoutNotification;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -98,5 +102,53 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         return view('frontend/auth/register');
+    }
+
+    public function store(Request $request)
+    {
+        try 
+        {
+            $request->validate([
+                'email' => 'required',
+                'password' => 'required',
+                'name' => 'required',
+                'password' => 'required',
+                'password_confirmation' => 'required',
+            ]);
+    
+            // Check if validation fails
+            // if ($validator->fails()) {
+            //     return redirect()->back()->withErrors($validator)->withInput();
+            // }
+    
+            // dd($request);
+    
+            $user = User::create([
+                'name' => $request->input('name'),
+                'gender' => $request->input('gender'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
+
+            $selectedRole = Role::where('name', 'Customer')->first();
+
+            // dd($request->input('occupation'));
+            // dd($selectedRole);
+            
+            $user->assignRole($selectedRole->name);
+
+            // Register successful, set success message            
+            $request->session()->flash('success_message', 'User registered successfully');
+    
+            // Redirect or return response
+            return redirect()->route('home.register')->with('success', 'Registration successful!');    
+        } 
+        catch (ValidationException $e) {
+            // return response()->json(['error' => $e->validator->errors()], 200);
+
+            // Validation failed, return validation errors
+            return redirect()->back()->withErrors($e->validator->errors())->withInput();
+            // dump($e->validator->errors());
+        }
     }
 }

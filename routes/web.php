@@ -32,3 +32,4 @@ Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('hom
 Route::get('/profile',[AuthController::class, 'profile'])->name('home.profile');
 Route::get('logout',[AuthController::class, 'logout'])->name('home.logout');
 Route::get('/register',[AuthController::class, 'register'])->name('home.register');
+Route::post('/store', [AuthController::class, 'store'])->name('home.store');
