@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginNotification;
 use App\Mail\LogoutNotification;
+use App\Mail\RegisterNotification;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -139,6 +140,11 @@ class AuthController extends Controller
 
             // Register successful, set success message            
             $request->session()->flash('success_message', 'User registered successfully');
+
+            // Send register notification email
+            if ($user) {
+                $this->sendRegisterNotification($user);
+            }
     
             // Redirect or return response
             return redirect()->route('home.register')->with('success', 'Registration successful!');    
@@ -151,4 +157,17 @@ class AuthController extends Controller
             // dump($e->validator->errors());
         }
     }
+
+    /**
+     * Send register notification email.
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
+    private function sendRegisterNotification(User $user)
+    {
+        Mail::to($user->email)->send(new RegisterNotification($user));
+    }
+    
+    
 }
