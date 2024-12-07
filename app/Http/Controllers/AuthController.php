@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginNotification;
+use App\Mail\LogoutNotification;
 
 class AuthController extends Controller
 {
@@ -62,13 +63,35 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // Retrieve the currently authenticated user before logging out
+        $id = Auth::id();
+
+        // dd($id);
+        $user = User::where('id', $id)->first();
+
         Auth::logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
+        // Send logout notification email
+        if ($user) {
+            $this->sendLogoutNotification($user);
+        }
+
         return redirect('/');
+    }
+
+    /**
+     * Send logout notification email.
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
+    private function sendLogoutNotification(User $user)
+    {
+        Mail::to($user->email)->send(new LogoutNotification($user));
     }
 
 
