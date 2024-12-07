@@ -52,5 +52,7 @@
     </script>
 
     @yield('login_scripts')
+
+    @yield('register_scripts')
 </body>
 </html>

@@ -17,8 +17,6 @@
             </div>
         @endif
 
-        <!-- registered successfully -->
-        <!-- Check if a success message exists in the session and display it -->
         @if (Session::has('success_message'))
             <div class="alert alert-success">
                 {{ Session::get('success_message') }}
@@ -26,7 +24,6 @@
         @endif
 
         <form action="{{ route('home.store') }}" method="POST">
-          <!-- CSRF Token for Laravel -->
           @csrf
 
           <div class="mb-3">
@@ -39,15 +36,25 @@
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
           </div>
 
-          <div class="mb-3">
+          <div class="mb-3 position-relative">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+            <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="#password">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
           </div>
-
-          <div class="mb-3">
+        
+          <div class="mb-3 position-relative">
             <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Re-enter your password" required>
-          </div>
+            <div class="input-group">
+                <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Re-enter your password" required>
+                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="#confirmPassword">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div>
+          </div>        
 
           <button type="submit" class="btn btn-primary w-100">Register</button>
         </form>
@@ -57,6 +64,25 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 
+@endsection
+
+@section('register_scripts')
+<script>
+    $(document).ready(function () {
+        console.log("Register script loaded");
+
+        // Toggle password visibility
+        $('.toggle-password').on('click', function () {
+            const target = $(this).data('target'); // Get the target input field
+            const inputField = $(target);
+            const type = inputField.attr('type') === 'password' ? 'text' : 'password';
+            inputField.attr('type', type);
+
+            // Toggle the eye icon
+            $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+        });
+    });
+</script>
 @endsection
