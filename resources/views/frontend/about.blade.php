@@ -18,7 +18,7 @@
                 <p>Founded in 2010, our company has been committed to delivering exceptional products and services to our customers. We started as a small team and have grown into a global brand, thanks to our dedicated team and loyal clients.</p>
             </div>
             <div class="col-md-6">
-                <img src="https://via.placeholder.com/500" class="img-fluid rounded" alt="Company History">
+                <img src="{{ asset('music_app.png') }}" class="img-fluid rounded" alt="Company History">
             </div>
         </div>
     </div>
