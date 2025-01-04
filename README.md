@@ -26,6 +26,7 @@ Ensure you have composer installed. You can download it from composer.
 Ensure you have visual studio code installed. You can download it from vs code.
 
 Go to Terminal
+
 1.Creating a Laravel Project
 
     composer create-project laravel/laravel laravel_music_app
